@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
-import { GameMap, Position, Direction } from '../types';
-import { TILE_SIZE, PrincessSprite, HouseExterior, FloorTile } from '../constants';
+import { GameMap, Position, Direction, PlayerAppearance } from '../types';
+import { TILE_SIZE, PrincessSprite, HouseExterior, FloorTile, ItemSprite } from '../constants';
 import { Sparkles, Utensils, BedDouble } from 'lucide-react';
 
 interface Props {
   mapData: GameMap;
   playerPos: Position;
   playerDir: Direction;
+  collectedObjectIds: string[];
+  appearance: PlayerAppearance;
 }
 
 const getFurnitureIcon = (type: string) => {
@@ -25,7 +27,7 @@ const getFurnitureIcon = (type: string) => {
   }
 };
 
-export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir }) => {
+export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, collectedObjectIds, appearance }) => {
   
   const mapWidthPx = mapData.width * TILE_SIZE;
   const mapHeightPx = mapData.height * TILE_SIZE;
@@ -53,8 +55,12 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir }
     ));
   }, [mapData]);
 
-  // Render Objects (Houses, Warps)
-  const objectsRender = mapData.objects.map((obj) => {
+  // Render Objects (Houses, Warps, Items)
+  const objectsRender = mapData.objects
+    .filter(obj => !collectedObjectIds.includes(obj.id)) // Hide collected items
+    .map((obj) => {
+    
+    // Houses
     if (mapData.id === 'village' && obj.targetMap?.startsWith('house')) {
       return (
         <div
@@ -70,6 +76,48 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir }
           <HouseExterior />
         </div>
       );
+    }
+    
+    // Signposts
+    if (obj.type === 'sign') {
+        return (
+          <div
+             key={obj.id}
+             className="absolute z-10 pointer-events-none flex items-center justify-center"
+             style={{
+               left: obj.position.x * TILE_SIZE,
+               top: obj.position.y * TILE_SIZE,
+               width: TILE_SIZE,
+               height: TILE_SIZE,
+             }}
+          >
+             <div className="w-8 h-6 bg-[#8f563b] border-2 border-[#5d3221] flex items-center justify-center shadow-lg">
+                <div className="w-4 h-[2px] bg-[#5d3221]" />
+                <div className="w-4 h-[2px] bg-[#5d3221] mt-1" />
+             </div>
+             <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#5d3221]" />
+          </div>
+        );
+    }
+
+    // Items
+    if (obj.type === 'item' && obj.itemId) {
+        return (
+          <div
+            key={obj.id}
+            className="absolute z-10 pointer-events-none animate-bounce"
+            style={{
+              left: obj.position.x * TILE_SIZE,
+              top: obj.position.y * TILE_SIZE,
+              width: TILE_SIZE,
+              height: TILE_SIZE,
+            }}
+          >
+            <div className="w-full h-full p-2">
+               <ItemSprite type={obj.itemId} />
+            </div>
+          </div>
+        );
     }
     return null;
   });
@@ -96,7 +144,7 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir }
         }}
       >
         <div className="w-full h-full scale-125 origin-bottom">
-           <PrincessSprite direction={playerDir} />
+           <PrincessSprite direction={playerDir} appearance={appearance} />
         </div>
       </div>
       
