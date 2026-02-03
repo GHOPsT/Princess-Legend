@@ -1,43 +1,20 @@
 
-export type Position = {
-  x: number;
-  y: number;
-};
+export interface PlayerAppearance {
+  hairColor: string;
+  dressColor: string;
+}
 
-export type TileType = 
-  | 'grass' 
-  | 'water' 
-  | 'wall' 
-  | 'floor' 
-  | 'door' 
-  | 'bed' 
-  | 'table' 
-  | 'sofa' 
-  | 'oven'
-  | 'flower'
-  | 'bookshelf'
-  | 'counter'
-  | 'fountain';
+export type Position = { x: number; y: number; };
+
+export type TileType = 'grass' | 'water' | 'wall' | 'floor' | 'door' | 'bed' | 'table' | 'sofa' | 'oven' | 'flower' | 'bookshelf' | 'counter' | 'fountain';
 
 export type ItemType = 'potion' | 'key' | 'sword';
 
-export interface DialogueChoice {
-  text: string;
-  nextStep?: string;
-  action?: 'buy_potion' | 'finish_quest' | 'start_quest';
-}
-
-export interface DialogueStep {
-  text: string;
-  choices?: DialogueChoice[];
-  nextStep?: string;
-  action?: 'buy_potion' | 'finish_quest' | 'start_quest';
-}
-
 export interface NPCData {
   name: string;
+  role: 'guard' | 'merchant' | 'elder' | 'villager' | 'storyteller';
   spriteType: 'elder' | 'villager' | 'merchant' | 'dog' | 'cat';
-  dialogue: Record<string, DialogueStep>;
+  dialogue: Record<string, { text: string; nextStep?: string }>;
   initialStep: string;
 }
 
@@ -47,8 +24,6 @@ export interface MapObject {
   position: Position;
   targetMap?: string;
   targetPos?: Position;
-  itemId?: ItemType;
-  message?: string;
   npcData?: NPCData;
 }
 
@@ -56,28 +31,24 @@ export interface GameMap {
   id: string;
   width: number;
   height: number;
-  tiles: TileType[][]; // [y][x]
+  tiles: TileType[][];
   objects: MapObject[];
-  baseColor: string;
+  connections: {
+      up?: string;
+      down?: string;
+      left?: string;
+      right?: string;
+  };
 }
 
 export type Direction = 'up' | 'down' | 'left' | 'right';
-
-export interface PlayerAppearance {
-  hairColor: string;
-  dressColor: string;
-}
 
 export interface GameState {
   currentMapId: string;
   playerPos: Position;
   direction: Direction;
-  isMoving: boolean;
   messages: string[];
-  inventory: Record<string, number>;
-  collectedObjectIds: string[];
   coins: number;
   appearance: PlayerAppearance;
-  activeQuests: string[];
-  completedQuests: string[];
+  collectedObjectIds: string[];
 }

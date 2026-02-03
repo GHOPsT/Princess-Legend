@@ -1,7 +1,8 @@
+
 import React, { useMemo } from 'react';
 import { GameMap, Position, Direction, PlayerAppearance } from '../types';
-import { TILE_SIZE, PrincessSprite, HouseExterior, FloorTile, ItemSprite, NPCSprite } from '../constants';
-import { Sparkles, Utensils, BedDouble, BookOpen, Store, Droplets } from 'lucide-react';
+import { TILE_SIZE, PrincessSprite, HouseExterior, FloorTile, NPCSprite } from '../constants';
+import { Sparkles, Utensils, Droplets } from 'lucide-react';
 
 interface Props {
   mapData: GameMap;
@@ -20,7 +21,7 @@ const getFurnitureIcon = (type: string) => {
     case 'table': return <div className="w-8 h-8 bg-amber-700 rounded-full border-4 border-amber-900" />;
     case 'bookshelf': return <div className="w-full h-full bg-amber-900 border-2 border-amber-950 p-1 flex flex-col gap-1"><div className="h-1 bg-blue-400 w-full"/><div className="h-1 bg-red-400 w-full"/><div className="h-1 bg-green-400 w-full"/></div>;
     case 'counter': return <div className="w-full h-full bg-amber-800 border-b-4 border-amber-950 shadow-md" />;
-    case 'fountain': return <div className="relative w-full h-full flex items-center justify-center"><div className="absolute w-12 h-12 bg-blue-400 rounded-full animate-ping opacity-20" /><Droplets size={32} className="text-blue-500 animate-pulse" /></div>;
+    case 'fountain': return null; // El componente FloorTile ya maneja el dibujo de la fuente
     case 'door': return <div className="w-full h-full bg-black/40" />; 
     default: return null;
   }
@@ -48,16 +49,15 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, 
   const objectsRender = mapData.objects
     .filter(obj => !collectedObjectIds.includes(obj.id)) 
     .map((obj) => {
-    if (mapData.id === 'village' && obj.targetMap?.startsWith('house') || obj.targetMap?.includes('shop') || obj.targetMap === 'bakery' || obj.targetMap === 'library' || obj.targetMap === 'restaurant') {
+    // Si es un warp a una casa o un edificio, dibujamos el exterior
+    if (obj.type === 'warp' && (obj.targetMap?.includes('house') || obj.targetMap?.includes('generic') || obj.targetMap === 'library')) {
       let exteriorProps = {};
       if (obj.targetMap === 'library') exteriorProps = { wall: '#757161', roof: '#3b82f6' };
-      else if (obj.targetMap === 'bakery') exteriorProps = { wall: '#fef3c7', roof: '#f97316' };
-      else if (obj.targetMap === 'restaurant') exteriorProps = { wall: '#fca5a5', roof: '#ef4444' };
-      else if (obj.targetMap === 'music_shop') exteriorProps = { wall: '#e9d5ff', roof: '#8b5cf6' };
-      else if (obj.targetMap === 'clothes_shop') exteriorProps = { wall: '#fbcfe8', roof: '#ec4899' };
+      else if (obj.id.includes('shop')) exteriorProps = { wall: '#fef3c7', roof: '#f97316' };
+      else if (obj.id.includes('cottage')) exteriorProps = { wall: '#fca5a5', roof: '#8b4513' };
       
       return (
-        <div key={obj.id} className="absolute z-10" style={{ left: obj.position.x * TILE_SIZE - (TILE_SIZE / 2), top: obj.position.y * TILE_SIZE - TILE_SIZE, width: TILE_SIZE * 2, height: TILE_SIZE * 2 }}>
+        <div key={obj.id} className="absolute z-10 pointer-events-none" style={{ left: obj.position.x * TILE_SIZE - (TILE_SIZE / 2), top: obj.position.y * TILE_SIZE - TILE_SIZE, width: TILE_SIZE * 2, height: TILE_SIZE * 2 }}>
           <HouseExterior {...exteriorProps} />
         </div>
       );

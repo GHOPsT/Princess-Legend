@@ -1,54 +1,54 @@
-
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { logger } from "./logger";
 
 /**
- * Acceso ultra-seguro a variables de entorno en el navegador.
+ * Generates immersive dialogue for NPCs using the Gemini API.
+ * Follows Google GenAI SDK guidelines for initialization and content generation.
  */
-const getApiKey = (): string | undefined => {
+export const generateNPCDialogue = async (role: string, name: string): Promise<string> => {
   try {
-    // Usar globalThis para evitar ReferenceError: process is not defined
-    const env = (globalThis as any).process?.env;
-    return env?.API_KEY;
-  } catch {
-    return undefined;
-  }
-};
+    // Initializing Gemini client with API_KEY from process.env as per guidelines
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const prompt = `Actúa como un NPC de un RPG de 16 bits. Nombre: ${name}, Rol: ${role}. 
+    Cuéntame una breve historia o comentario sobre el reino (máx 120 caracteres). 
+    Sé inmersivo y no uses markdown.`;
 
-export const generateRoomDescription = async (roomType: string, decorators: string[]): Promise<string> => {
-  const apiKey = getApiKey();
-
-  if (!apiKey) {
-    logger.warn("Gemini: No se detectó API_KEY. Usando descripciones locales.");
-    return `Entras en ${roomType}. El lugar tiene un encanto real innegable.`;
-  }
-
-  logger.info(`Gemini: Solicitando descripción para ${roomType}...`);
-
-  try {
-    const ai = new GoogleGenAI({ apiKey });
-    const prompt = `
-      Eres el narrador de un MMORPG de 8 bits. 
-      Personaje: Princesa.
-      Lugar: ${roomType}.
-      Muebles: ${decorators.join(', ')}.
-      Escribe una frase corta (100 carac.) de bienvenida mágica en español. Sin markdown.
-    `;
-
-    const response = await ai.models.generateContent({
+    const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
-      config: {
-        maxOutputTokens: 60,
-        temperature: 0.8,
+      config: { 
+        temperature: 0.9 
       }
     });
 
-    const text = response.text || "Un rincón pacífico del reino.";
-    logger.ia("Gemini: Respuesta recibida exitosamente.");
-    return text;
-  } catch (error: any) {
-    logger.error("Gemini: Error en la llamada a la API", error.message);
-    return `Has llegado a ${roomType}. Se siente un aire de misterio.`;
+    // Directly access the .text property of GenerateContentResponse
+    return response.text || "Un día radiante, ¿no cree?";
+  } catch (error) {
+    logger.error("Gemini Dialogue Error", error);
+    // Robust handling with fallbacks when the API request fails
+    const fallbacks: Record<string, string> = {
+      guard: "El camino hacia el norte es peligroso hoy.",
+      merchant: "Tengo las mejores telas de seda del reino.",
+      elder: "En mis tiempos, las flores brillaban por la noche.",
+      storyteller: "Había una vez un reino flotante..."
+    };
+    return fallbacks[role] || "Hola, joven princesa.";
   }
+};
+
+/**
+ * Generates brief room descriptions using the Gemini API.
+ */
+export const generateRoomDescription = async (roomType: string): Promise<string> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const response: GenerateContentResponse = await ai.models.generateContent({
+            model: 'gemini-3-flash-preview',
+            contents: `Describe brevemente (10 carac.) la entrada a ${roomType} en un RPG.`,
+        });
+        return response.text || "Nueva zona descubierta.";
+    } catch (error) {
+        logger.error("Gemini Room Description Error", error);
+        return `Entras en ${roomType}. Todo está impecable.`;
+    }
 };
