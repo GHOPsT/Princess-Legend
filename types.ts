@@ -1,3 +1,4 @@
+
 export type Position = {
   x: number;
   y: number;
@@ -17,14 +18,36 @@ export type TileType =
 
 export type ItemType = 'potion' | 'key' | 'sword';
 
+export interface DialogueChoice {
+  text: string;
+  nextStep?: string;
+  action?: 'buy_potion' | 'finish_quest' | 'start_quest';
+}
+
+export interface DialogueStep {
+  text: string;
+  choices?: DialogueChoice[];
+  nextStep?: string;
+  // Fix: Added action property to DialogueStep as it is used in constants.tsx and App.tsx to trigger events after a dialogue step.
+  action?: 'buy_potion' | 'finish_quest' | 'start_quest';
+}
+
+export interface NPCData {
+  name: string;
+  spriteType: 'elder' | 'villager' | 'merchant';
+  dialogue: Record<string, DialogueStep>;
+  initialStep: string;
+}
+
 export interface MapObject {
   id: string;
   type: 'npc' | 'item' | 'warp' | 'sign';
   position: Position;
-  targetMap?: string; // If warp
-  targetPos?: Position; // If warp
-  itemId?: ItemType; // If item
-  message?: string; // If sign
+  targetMap?: string;
+  targetPos?: Position;
+  itemId?: ItemType;
+  message?: string;
+  npcData?: NPCData;
 }
 
 export interface GameMap {
@@ -53,4 +76,6 @@ export interface GameState {
   collectedObjectIds: string[];
   coins: number;
   appearance: PlayerAppearance;
+  activeQuests: string[];
+  completedQuests: string[];
 }

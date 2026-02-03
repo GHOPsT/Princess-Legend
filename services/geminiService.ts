@@ -1,19 +1,16 @@
+
 import { GoogleGenAI } from "@google/genai";
 
-let ai: GoogleGenAI | null = null;
-
-try {
-  if (process.env.API_KEY) {
-    ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  }
-} catch (error) {
-  console.warn("Gemini API Key missing or invalid.");
-}
-
+// Initialize Gemini client inside the service function to ensure it uses the most current API key and configuration.
 export const generateRoomDescription = async (roomType: string, decorators: string[]): Promise<string> => {
-  if (!ai) {
+  // Always retrieve the API key from process.env.API_KEY directly as required.
+  const apiKey = process.env.API_KEY;
+  if (!apiKey) {
     return `Entras en ${roomType}. Es un lugar tranquilo.`;
   }
+
+  // Create a new GoogleGenAI instance for each call to avoid stale configuration.
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const prompt = `
@@ -26,15 +23,19 @@ export const generateRoomDescription = async (roomType: string, decorators: stri
       Do not use markdown. Just plain text.
     `;
 
+    // Use 'gemini-3-flash-preview' for basic text tasks like narrative generation.
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
-        maxOutputTokens: 60,
+        // When setting maxOutputTokens, you must also set a thinkingBudget for Gemini 3 series models.
+        maxOutputTokens: 100,
+        thinkingConfig: { thinkingBudget: 50 },
         temperature: 0.8,
       }
     });
 
+    // Extract text from the response using the .text property directly.
     return response.text || "El ambiente es misterioso...";
   } catch (error) {
     console.error("Error generating description:", error);
