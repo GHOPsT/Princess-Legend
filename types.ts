@@ -14,7 +14,10 @@ export type TileType =
   | 'table' 
   | 'sofa' 
   | 'oven'
-  | 'flower';
+  | 'flower'
+  | 'bookshelf'
+  | 'counter'
+  | 'fountain';
 
 export type ItemType = 'potion' | 'key' | 'sword';
 
@@ -28,13 +31,12 @@ export interface DialogueStep {
   text: string;
   choices?: DialogueChoice[];
   nextStep?: string;
-  // Fix: Added action property to DialogueStep as it is used in constants.tsx and App.tsx to trigger events after a dialogue step.
   action?: 'buy_potion' | 'finish_quest' | 'start_quest';
 }
 
 export interface NPCData {
   name: string;
-  spriteType: 'elder' | 'villager' | 'merchant';
+  spriteType: 'elder' | 'villager' | 'merchant' | 'dog' | 'cat';
   dialogue: Record<string, DialogueStep>;
   initialStep: string;
 }

@@ -1,44 +1,54 @@
 
 import { GoogleGenAI } from "@google/genai";
+import { logger } from "./logger";
 
-// Initialize Gemini client inside the service function to ensure it uses the most current API key and configuration.
+/**
+ * Acceso ultra-seguro a variables de entorno en el navegador.
+ */
+const getApiKey = (): string | undefined => {
+  try {
+    // Usar globalThis para evitar ReferenceError: process is not defined
+    const env = (globalThis as any).process?.env;
+    return env?.API_KEY;
+  } catch {
+    return undefined;
+  }
+};
+
 export const generateRoomDescription = async (roomType: string, decorators: string[]): Promise<string> => {
-  // Always retrieve the API key from process.env.API_KEY directly as required.
-  const apiKey = process.env.API_KEY;
+  const apiKey = getApiKey();
+
   if (!apiKey) {
-    return `Entras en ${roomType}. Es un lugar tranquilo.`;
+    logger.warn("Gemini: No se detectó API_KEY. Usando descripciones locales.");
+    return `Entras en ${roomType}. El lugar tiene un encanto real innegable.`;
   }
 
-  // Create a new GoogleGenAI instance for each call to avoid stale configuration.
-  const ai = new GoogleGenAI({ apiKey });
+  logger.info(`Gemini: Solicitando descripción para ${roomType}...`);
 
   try {
+    const ai = new GoogleGenAI({ apiKey });
     const prompt = `
-      Act as the Dungeon Master for an 8-bit RPG game. 
-      The player is a princess character.
-      She just entered: ${roomType}.
-      Visible items: ${decorators.join(', ')}.
-      
-      Write a VERY SHORT (max 150 characters), whimsical, and immersive description in Spanish. 
-      Do not use markdown. Just plain text.
+      Eres el narrador de un MMORPG de 8 bits. 
+      Personaje: Princesa.
+      Lugar: ${roomType}.
+      Muebles: ${decorators.join(', ')}.
+      Escribe una frase corta (100 carac.) de bienvenida mágica en español. Sin markdown.
     `;
 
-    // Use 'gemini-3-flash-preview' for basic text tasks like narrative generation.
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
-        // When setting maxOutputTokens, you must also set a thinkingBudget for Gemini 3 series models.
-        maxOutputTokens: 100,
-        thinkingConfig: { thinkingBudget: 50 },
+        maxOutputTokens: 60,
         temperature: 0.8,
       }
     });
 
-    // Extract text from the response using the .text property directly.
-    return response.text || "El ambiente es misterioso...";
-  } catch (error) {
-    console.error("Error generating description:", error);
-    return `Entras en ${roomType}.`;
+    const text = response.text || "Un rincón pacífico del reino.";
+    logger.ia("Gemini: Respuesta recibida exitosamente.");
+    return text;
+  } catch (error: any) {
+    logger.error("Gemini: Error en la llamada a la API", error.message);
+    return `Has llegado a ${roomType}. Se siente un aire de misterio.`;
   }
 };
