@@ -35,7 +35,15 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, 
     return mapData.tiles.map((row, y) => (
       <div key={`row-${y}`} className="flex">
         {row.map((tile, x) => (
-          <div key={`tile-${x}-${y}`} style={{ width: TILE_SIZE, height: TILE_SIZE }} className="relative">
+          <div 
+            key={`tile-${x}-${y}`} 
+            style={{ 
+              width: TILE_SIZE, 
+              height: TILE_SIZE,
+              zIndex: tile === 'fountain' ? 5 : 0 // Elevamos la fuente para que su overflow se vea bien
+            }} 
+            className="relative"
+          >
             <FloorTile type={tile} />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               {getFurnitureIcon(tile)}

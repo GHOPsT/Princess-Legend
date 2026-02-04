@@ -15,58 +15,95 @@ const createBaseMap = (id: string, connections: any = {}): GameMap => ({
   connections
 });
 
+/**
+ * Pinta un camino con irregularidades.
+ * xRange/yRange son los centros aproximados del camino.
+ */
+const paintNaturalPath = (map: GameMap, isHorizontal: boolean, fixedCoord: number, range: [number, number]) => {
+  for (let i = range[0]; i <= range[1]; i++) {
+    const x = isHorizontal ? i : fixedCoord;
+    const y = isHorizontal ? fixedCoord : i;
+    
+    // Pintamos el bloque central del camino
+    if (y >= 0 && y < 12 && x >= 0 && x < 15) map.tiles[y][x] = 'path';
+    
+    // Añadimos variaciones laterales aleatorias
+    if (Math.random() > 0.4) {
+      const offset = Math.random() > 0.5 ? 1 : -1;
+      const vx = isHorizontal ? x : x + offset;
+      const vy = isHorizontal ? y + offset : y;
+      if (vy >= 0 && vy < 12 && vx >= 0 && vx < 15) map.tiles[vy][vx] = 'path';
+    }
+  }
+};
+
 // --- MAPA CENTRAL: PLAZA DE LA FUENTE ---
 const village_center = createBaseMap('village_center', { 
   up: 'village_north', 
   right: 'village_east',
   left: 'village_west' 
 });
-village_center.tiles[6][7] = 'fountain';
+
+// Caminos que se cruzan en el centro (x=7-8, y=6-7)
+paintNaturalPath(village_center, true, 6, [0, 14]);
+paintNaturalPath(village_center, true, 7, [0, 14]);
+paintNaturalPath(village_center, false, 7, [0, 11]);
+paintNaturalPath(village_center, false, 8, [0, 11]);
+
+// La fuente gigante en el corazón del camino central
+village_center.tiles[6][7] = 'fountain'; 
 
 village_center.objects.push(
     { id: 'house_player_ent', type: 'warp', position: { x: 3, y: 3 }, targetMap: 'house_player' },
     { id: 'house_lib_ent', type: 'warp', position: { x: 11, y: 3 }, targetMap: 'library' },
     { id: 'house_extra_1', type: 'warp', position: { x: 3, y: 8 }, targetMap: 'house_generic' },
     { id: 'house_extra_2', type: 'warp', position: { x: 11, y: 8 }, targetMap: 'house_generic' },
-    { id: 'npc_elder', type: 'npc', position: { x: 8, y: 7 }, npcData: {
+    { id: 'npc_elder', type: 'npc', position: { x: 9, y: 8 }, npcData: {
         name: "Anciano Valerius", role: 'elder', spriteType: 'elder', initialStep: 'start',
-        dialogue: { 'start': { text: "La fuente de este pueblo ha fluido por mil años, Alteza." } }
+        dialogue: { 'start': { text: "Los caminos del reino siempre te traerán de vuelta a casa, Alteza." } }
     }}
 );
 
 // --- MAPA OESTE: EL BOSQUE SUSURRANTE ---
 const village_west = createBaseMap('village_west', { right: 'village_center' });
-for(let y=4; y<8; y++) village_west.tiles[y][0] = 'water';
+paintNaturalPath(village_west, true, 6, [0, 14]);
+paintNaturalPath(village_west, true, 7, [0, 14]);
+
+for(let y=4; y<8; y++) village_west.tiles[y][0] = 'water'; // Un río al final del camino
 village_west.objects.push(
     { id: 'house_cottage', type: 'warp', position: { x: 10, y: 2 }, targetMap: 'house_generic' },
-    { id: 'npc_storyteller', type: 'npc', position: { x: 10, y: 5 }, npcData: {
+    { id: 'npc_storyteller', type: 'npc', position: { x: 11, y: 5 }, npcData: {
         name: "Bardo Lute", role: 'storyteller', spriteType: 'villager', initialStep: 'start',
         dialogue: { 'start': { text: "Dicen que hacia el oeste los árboles tienen ojos..." } }
     }}
 );
-village_west.tiles[3][3] = 'flower';
-village_west.tiles[9][10] = 'flower';
 
 // --- MAPA NORTE: CAMINO AL CASTILLO ---
 const village_north = createBaseMap('village_north', { down: 'village_center' });
-for(let x=0; x<15; x++) village_north.tiles[0][x] = 'wall';
+paintNaturalPath(village_north, false, 7, [0, 11]);
+paintNaturalPath(village_north, false, 8, [0, 11]);
+
+for(let x=0; x<15; x++) village_north.tiles[0][x] = 'wall'; // Muro del castillo
 village_north.objects.push(
     { id: 'house_guard', type: 'warp', position: { x: 3, y: 2 }, targetMap: 'house_generic' },
     { id: 'house_guard_2', type: 'warp', position: { x: 12, y: 2 }, targetMap: 'house_generic' },
-    { id: 'npc_guard', type: 'npc', position: { x: 7, y: 2 }, npcData: {
+    { id: 'npc_guard', type: 'npc', position: { x: 6, y: 4 }, npcData: {
         name: "Guardia Real", role: 'guard', spriteType: 'villager', initialStep: 'start',
-        dialogue: { 'start': { text: "Nadie pasa al castillo sin el sello real." } }
+        dialogue: { 'start': { text: "Este camino lleva directo a la ciudadela real." } }
     }}
 );
 
-// --- MAPA ESTE: MERCADO ---
+// --- MAPA ESTE: EL MERCADO ---
 const village_east = createBaseMap('village_east', { left: 'village_center' });
+paintNaturalPath(village_east, true, 6, [0, 14]);
+paintNaturalPath(village_east, true, 7, [0, 14]);
+
 village_east.objects.push(
     { id: 'house_shop_1', type: 'warp', position: { x: 4, y: 3 }, targetMap: 'house_generic' },
     { id: 'house_shop_2', type: 'warp', position: { x: 10, y: 3 }, targetMap: 'house_generic' },
-    { id: 'npc_merchant', type: 'npc', position: { x: 5, y: 5 }, npcData: {
+    { id: 'npc_merchant', type: 'npc', position: { x: 5, y: 8 }, npcData: {
         name: "Mercader Barnaby", role: 'merchant', spriteType: 'merchant', initialStep: 'start',
-        dialogue: { 'start': { text: "¿Buscáis joyas? Mis precios son... razonables." } }
+        dialogue: { 'start': { text: "¡Seguid el camino dorado! Mis ofertas os esperan." } }
     }}
 );
 
