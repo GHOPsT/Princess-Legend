@@ -1,10 +1,10 @@
 
-import React, { useMemo } from 'react';
-import { GameMap, Position, Direction, PlayerAppearance } from '../types';
-import { TILE_SIZE } from '../constants';
-import { FloorTile, FountainModel, FurnitureIcon } from '../sprite_environment';
-import { PrincessModel, NPCModel } from '../sprite_characters';
-import { HouseModel, HOUSE_STYLES } from '../sprite_buildings';
+import React from 'react';
+import { GameMap, Position, Direction, PlayerAppearance } from '../models/types';
+import { TILE_SIZE } from '../maps/world';
+import { FloorTile, FountainModel, FurnitureIcon } from '../sprites/environment';
+import { PrincessModel, NPCModel } from '../sprites/characters';
+import { HouseModel, HOUSE_STYLES } from '../sprites/buildings';
 
 interface Props {
   mapData: GameMap;
