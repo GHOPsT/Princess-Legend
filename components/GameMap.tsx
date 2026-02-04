@@ -15,21 +15,18 @@ interface Props {
 const getFurnitureIcon = (type: string) => {
   switch (type) {
     case 'flower': return <div className="animate-bounce"><Sparkles size={20} className="text-pink-500 fill-pink-300" /></div>;
-    case 'bed': return <div className="w-full h-full bg-red-800 rounded-sm border-2 border-red-950 flex items-center justify-center"><div className="w-8 h-6 bg-white rounded-sm" /></div>;
-    case 'oven': return <Utensils size={24} className="text-gray-200 drop-shadow-md" />;
-    case 'sofa': return <div className="w-8 h-6 bg-indigo-700 rounded-lg border-b-4 border-indigo-900" />;
-    case 'table': return <div className="w-8 h-8 bg-amber-700 rounded-full border-4 border-amber-900" />;
+    case 'bed': return <div className="w-full h-full bg-red-800 rounded-sm border-2 border-red-950 flex items-center justify-center"><div className="w-8 h-6 bg-white rounded-t-lg" /></div>;
+    case 'oven': return <div className="flex flex-col items-center"><Utensils size={20} className="text-gray-300" /><div className="w-6 h-2 bg-orange-500 blur-[2px] animate-pulse" /></div>;
+    case 'sofa': return <div className="w-10 h-6 bg-indigo-700 rounded-lg border-b-4 border-indigo-900 shadow-md" />;
+    case 'table': return <div className="w-8 h-8 bg-amber-700 rounded-full border-4 border-amber-900 shadow-lg" />;
     case 'bookshelf': return <div className="w-full h-full bg-amber-900 border-2 border-amber-950 p-1 flex flex-col gap-1"><div className="h-1 bg-blue-400 w-full"/><div className="h-1 bg-red-400 w-full"/><div className="h-1 bg-green-400 w-full"/></div>;
     case 'counter': return <div className="w-full h-full bg-amber-800 border-b-4 border-amber-950 shadow-md" />;
     case 'fountain': return null;
-    case 'door': return <div className="w-full h-full bg-black/40" />; 
+    case 'door': return <div className="w-full h-full bg-black/40 flex items-center justify-center"><div className="text-white text-[8px] animate-pulse">EXIT</div></div>; 
     default: return null;
   }
 };
 
-/**
- * Generates a stable pseudo-random style from a string ID
- */
 const getStableStyle = (id: string) => {
   const styles = Object.keys(HOUSE_STYLES);
   let hash = 0;
@@ -53,7 +50,7 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, 
             style={{ 
               width: TILE_SIZE, 
               height: TILE_SIZE,
-              zIndex: tile === 'fountain' ? 5 : 0
+              zIndex: ['fountain', 'bed', 'sofa', 'table', 'bookshelf', 'oven'].includes(tile) ? 5 : 0
             }} 
             className="relative"
           >
@@ -70,20 +67,15 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, 
   const objectsRender = mapData.objects
     .filter(obj => !collectedObjectIds.includes(obj.id)) 
     .map((obj) => {
-    if (obj.type === 'warp' && (obj.targetMap?.includes('house') || obj.targetMap?.includes('generic') || obj.targetMap === 'library')) {
+    if (obj.type === 'warp' && (obj.targetMap?.startsWith('house_') || obj.targetMap === 'library')) {
+      // Solo dibujamos el exterior si estamos en un mapa exterior (village_*)
+      if (!mapData.id.startsWith('village')) return null;
+
       let exteriorProps = {};
-      
-      // Assign specific styles for important buildings
-      if (obj.targetMap === 'library') {
-        exteriorProps = HOUSE_STYLES.noble;
-      } else if (obj.id.includes('shop')) {
-        exteriorProps = HOUSE_STYLES.shop;
-      } else if (obj.id.includes('cottage')) {
-        exteriorProps = HOUSE_STYLES.cottage;
-      } else {
-        // Random variation for generic houses using stable hash
-        exteriorProps = getStableStyle(obj.id);
-      }
+      if (obj.targetMap === 'library') exteriorProps = HOUSE_STYLES.noble;
+      else if (obj.id.includes('shop')) exteriorProps = HOUSE_STYLES.shop;
+      else if (obj.id.includes('cottage')) exteriorProps = HOUSE_STYLES.cottage;
+      else exteriorProps = getStableStyle(obj.id);
       
       return (
         <div key={obj.id} className="absolute z-10 pointer-events-none" 
@@ -104,10 +96,6 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, 
                 <NPCSprite type={obj.npcData.spriteType} />
             </div>
         );
-    }
-
-    if (obj.type === 'sign') {
-        return <div key={obj.id} className="absolute z-10 bg-amber-900 w-8 h-6 border-2 border-amber-950" style={{ left: obj.position.x * TILE_SIZE + 8, top: obj.position.y * TILE_SIZE + 8 }} />;
     }
 
     return null;
