@@ -118,6 +118,23 @@ house_generic.tiles = Array(10).fill(0).map(() => Array(12).fill('floor'));
 for(let x=0; x<12; x++) house_generic.tiles[0][x] = 'wall';
 house_generic.objects.push({ id: 'exit_generic', type: 'warp', position: { x: 6, y: 9 }, targetMap: 'village_center', targetPos: { x: 7, y: 7 } });
 
-export const MAPS: Record<string, GameMap> = { village_center, village_north, village_east, village_west, house_player, house_generic };
+const library = createBaseMap('library');
+library.tiles = Array(10).fill(0).map(() => Array(12).fill('floor'));
+for(let x=0; x<12; x++) library.tiles[0][x] = 'wall';
+// Decoración de biblioteca
+library.tiles[1][2] = 'bookshelf';
+library.tiles[1][3] = 'bookshelf';
+library.tiles[1][8] = 'bookshelf';
+library.tiles[1][9] = 'bookshelf';
+library.tiles[4][1] = 'bookshelf';
+library.tiles[5][1] = 'bookshelf';
+library.tiles[4][10] = 'bookshelf';
+library.tiles[5][10] = 'bookshelf';
+library.tiles[2][5] = 'table';
+library.tiles[2][6] = 'table';
+library.objects.push({ id: 'exit_library', type: 'warp', position: { x: 6, y: 9 }, targetMap: 'village_center', targetPos: { x: 11, y: 4 } });
 
-export { FloorTile, PrincessSprite, NPCSprite, HouseExterior } from './constants_sprites';
+export const MAPS: Record<string, GameMap> = { village_center, village_north, village_east, village_west, house_player, house_generic, library };
+
+// Add HOUSE_STYLES to re-exports from constants_sprites.tsx
+export { FloorTile, PrincessSprite, NPCSprite, HouseExterior, HOUSE_STYLES } from './constants_sprites';

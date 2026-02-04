@@ -1,7 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { GameMap, Position, Direction, PlayerAppearance } from '../types';
-import { TILE_SIZE, PrincessSprite, HouseExterior, FloorTile, NPCSprite } from '../constants';
+import { TILE_SIZE, PrincessSprite, HouseExterior, FloorTile, NPCSprite, HOUSE_STYLES } from '../constants';
 import { Sparkles, Utensils } from 'lucide-react';
 
 interface Props {
@@ -25,6 +25,19 @@ const getFurnitureIcon = (type: string) => {
     case 'door': return <div className="w-full h-full bg-black/40" />; 
     default: return null;
   }
+};
+
+/**
+ * Generates a stable pseudo-random style from a string ID
+ */
+const getStableStyle = (id: string) => {
+  const styles = Object.keys(HOUSE_STYLES);
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % styles.length;
+  return HOUSE_STYLES[styles[index]];
 };
 
 export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, collectedObjectIds, appearance }) => {
@@ -59,11 +72,19 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, 
     .map((obj) => {
     if (obj.type === 'warp' && (obj.targetMap?.includes('house') || obj.targetMap?.includes('generic') || obj.targetMap === 'library')) {
       let exteriorProps = {};
-      if (obj.targetMap === 'library') exteriorProps = { wall: '#757161', roof: '#3b82f6' };
-      else if (obj.id.includes('shop')) exteriorProps = { wall: '#fef3c7', roof: '#f97316' };
-      else if (obj.id.includes('cottage')) exteriorProps = { wall: '#fca5a5', roof: '#8b4513' };
       
-      // Las casas ahora son más grandes (2.5x2.5 tiles aprox de impacto visual)
+      // Assign specific styles for important buildings
+      if (obj.targetMap === 'library') {
+        exteriorProps = HOUSE_STYLES.noble;
+      } else if (obj.id.includes('shop')) {
+        exteriorProps = HOUSE_STYLES.shop;
+      } else if (obj.id.includes('cottage')) {
+        exteriorProps = HOUSE_STYLES.cottage;
+      } else {
+        // Random variation for generic houses using stable hash
+        exteriorProps = getStableStyle(obj.id);
+      }
+      
       return (
         <div key={obj.id} className="absolute z-10 pointer-events-none" 
              style={{ 
