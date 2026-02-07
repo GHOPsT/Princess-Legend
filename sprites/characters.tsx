@@ -22,6 +22,7 @@ export const NPCModel = ({ type }: { type: NPCData['spriteType'] }) => {
   const isMerchant = type === 'merchant';
   const isDog = type === 'dog';
   const isCat = type === 'cat';
+  const isGuard = type === 'guard';
 
   if (isDog) {
     return (
@@ -68,6 +69,32 @@ export const NPCModel = ({ type }: { type: NPCData['spriteType'] }) => {
     );
   }
 
+  // --- GUARD SPRITE ---
+  if (isGuard) {
+    return (
+      <svg width="100%" height="100%" viewBox="0 0 24 24">
+        {/* Body Armor */}
+        <rect x="6" y="12" width="12" height="11" fill="#94a3b8" stroke="#475569" strokeWidth="0.5" rx="1" />
+        <rect x="8" y="14" width="8" height="7" fill="#cbd5e1" opacity="0.5" />
+        
+        {/* Head / Helmet */}
+        <rect x="8" y="5" width="8" height="8" fill="#FFE0BD" rx="1" />
+        <path d="M8 5 L16 5 L16 8 L8 8 Z" fill="#64748b" /> {/* Helmet Top */}
+        <rect x="9" y="4" width="6" height="2" fill="#64748b" /> {/* Helmet Crest Base */}
+        <rect x="11" y="2" width="2" height="2" fill="#dc2626" /> {/* Plume */}
+
+        {/* Face */}
+        <rect x="10" y="8" width="1.5" height="1.5" fill="black" />
+        <rect x="13" y="8" width="1.5" height="1.5" fill="black" />
+        
+        {/* Weapon/Shield hint */}
+        <rect x="18" y="14" width="2" height="10" fill="#9ca3af" /> {/* Spear Shaft */}
+        <path d="M17 14 L19 10 L21 14 Z" fill="#e2e8f0" stroke="#64748b" strokeWidth="0.5" /> {/* Spear Tip */}
+      </svg>
+    );
+  }
+
+  // --- GENERIC VILLAGER / ELDER / MERCHANT ---
   return (
     <svg width="100%" height="100%" viewBox="0 0 24 24">
       <rect x="6" y="12" width="12" height="11" fill={isMerchant ? '#7c2d12' : isElder ? '#4b5563' : '#1e3a8a'} rx="1" />

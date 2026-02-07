@@ -2,6 +2,7 @@
 import React from 'react';
 
 export interface HouseStyle {
+  buildingType?: 'house' | 'castle';
   wall?: string;
   roof?: string;
   hasChimney?: boolean;
@@ -21,6 +22,7 @@ export interface HouseStyle {
 
 export const HOUSE_STYLES: Record<string, HouseStyle> = {
   basic: { 
+    buildingType: 'house',
     wall: '#f3e5ab', // Parchment color
     roof: '#5d3221', 
     wallTexture: 'timber', 
@@ -29,6 +31,7 @@ export const HOUSE_STYLES: Record<string, HouseStyle> = {
     roofType: 'classic' 
   },
   royal: { 
+    buildingType: 'house',
     wall: '#e2e8f0', 
     roof: '#1e40af', 
     flowerColor: '#fbbf24', 
@@ -41,6 +44,7 @@ export const HOUSE_STYLES: Record<string, HouseStyle> = {
     roofType: 'steep' 
   },
   shop: { 
+    buildingType: 'house',
     wall: '#d1b48c', 
     roof: '#8b4513', 
     hasAwning: true, 
@@ -50,6 +54,7 @@ export const HOUSE_STYLES: Record<string, HouseStyle> = {
     roofType: 'flat' 
   },
   tavern: { 
+    buildingType: 'house',
     wall: '#8b4513', 
     roof: '#4b2510', 
     wallTexture: 'timber', 
@@ -60,16 +65,93 @@ export const HOUSE_STYLES: Record<string, HouseStyle> = {
     roofType: 'steep'
   },
   cottage: { 
+    buildingType: 'house',
     wall: '#f5f5dc', 
     roof: '#c2b280', // Thatch color
     ivy: true, 
     doorColor: '#5d4037', 
     roofType: 'thatch',
     hasPots: true
+  },
+  castle: {
+    buildingType: 'castle',
+    wall: '#94a3b8', // Stone
+    roof: '#1e293b', // Dark Slate
+    doorColor: '#451a03',
+    wallTexture: 'stone'
   }
 };
 
 export const HouseModel = ({ style }: { style: HouseStyle }) => {
+  // --- CASTLE RENDER ---
+  if (style.buildingType === 'castle') {
+    return (
+      <svg viewBox="0 0 120 100" width="100%" height="100%" style={{ overflow: 'visible' }}>
+        {/* Shadow */}
+        <ellipse cx="60" cy="95" rx="55" ry="10" fill="black" opacity="0.3" />
+
+        {/* --- MAIN KEEP BODY --- */}
+        <rect x="35" y="30" width="50" height="65" fill="#64748b" stroke="#1e293b" strokeWidth="1" />
+        {/* Battlements Center */}
+        <path d="M35 30 L35 25 L40 25 L40 30 L45 30 L45 25 L50 25 L50 30 L55 30 L55 25 L60 25 L60 30 L65 30 L65 25 L70 25 L70 30 L75 30 L75 25 L80 25 L80 30 L85 30 L85 25 L85 30 Z" fill="#64748b" stroke="#1e293b" strokeWidth="1" />
+
+        {/* --- LEFT TOWER --- */}
+        <rect x="10" y="20" width="30" height="75" fill="#64748b" stroke="#1e293b" strokeWidth="1" />
+        {/* Left Tower Roof */}
+        <path d="M8 20 L25 -5 L42 20 Z" fill="#334155" stroke="#1e293b" strokeWidth="1" />
+        {/* Left Tower Window */}
+        <rect x="22" y="35" width="6" height="12" rx="3" fill="#1e293b" />
+        <rect x="23" y="36" width="4" height="10" rx="2" fill="#0ea5e9" opacity="0.6" />
+
+        {/* --- RIGHT TOWER --- */}
+        <rect x="80" y="20" width="30" height="75" fill="#64748b" stroke="#1e293b" strokeWidth="1" />
+        {/* Right Tower Roof */}
+        <path d="M78 20 L95 -5 L112 20 Z" fill="#334155" stroke="#1e293b" strokeWidth="1" />
+        {/* Right Tower Window */}
+        <rect x="92" y="35" width="6" height="12" rx="3" fill="#1e293b" />
+        <rect x="93" y="36" width="4" height="10" rx="2" fill="#0ea5e9" opacity="0.6" />
+
+        {/* --- CENTRAL GATE --- */}
+        {/* Arch Frame */}
+        <path d="M45 95 L45 65 Q60 50 75 65 L75 95 Z" fill="#334155" />
+        {/* Wooden Door */}
+        <path d="M47 95 L47 66 Q60 53 73 66 L73 95 Z" fill="#451a03" stroke="#000" strokeWidth="0.5" />
+        {/* Iron Bars/Details on Door */}
+        <line x1="60" y1="53" x2="60" y2="95" stroke="#000" strokeWidth="1" opacity="0.5" />
+        <line x1="47" y1="75" x2="73" y2="75" stroke="#000" strokeWidth="1" opacity="0.5" />
+        <line x1="47" y1="85" x2="73" y2="85" stroke="#000" strokeWidth="1" opacity="0.5" />
+
+        {/* --- FLAGS --- */}
+        {/* Left Flag */}
+        <line x1="25" y1="-5" x2="25" y2="-15" stroke="#1e293b" strokeWidth="1" />
+        <path d="M25 -15 L40 -10 L25 -5 Z" fill="#dc2626" />
+        {/* Right Flag */}
+        <line x1="95" y1="-5" x2="95" y2="-15" stroke="#1e293b" strokeWidth="1" />
+        <path d="M95 -15 L110 -10 L95 -5 Z" fill="#dc2626" />
+        {/* Center Flag (Big) */}
+        <line x1="60" y1="25" x2="60" y2="10" stroke="#1e293b" strokeWidth="1" />
+        <path d="M60 10 L80 15 L60 20 Z" fill="#2563eb" />
+
+        {/* --- DECORATION --- */}
+        {/* Stone texture random */}
+        <g opacity="0.2" fill="#000">
+           <rect x="15" y="50" width="5" height="3" />
+           <rect x="25" y="70" width="5" height="3" />
+           <rect x="85" y="60" width="5" height="3" />
+           <rect x="50" y="40" width="5" height="3" />
+        </g>
+        
+        {/* Torches by the gate */}
+        <circle cx="42" cy="75" r="1.5" fill="#fca5a5" />
+        <circle cx="42" cy="73" r="1" fill="#ef4444" className="animate-ping" />
+        <circle cx="78" cy="75" r="1.5" fill="#fca5a5" />
+        <circle cx="78" cy="73" r="1" fill="#ef4444" className="animate-ping" />
+
+      </svg>
+    );
+  }
+
+  // --- STANDARD HOUSE RENDER ---
   const roofLight = style.roof || '#5d3221'; 
   const roofDark = 'rgba(0,0,0,0.3)';
 

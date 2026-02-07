@@ -19,8 +19,9 @@ interface Props {
  */
 const getHouseStyle = (id: string): HouseStyle => {
   if (id === 'h_player') return HOUSE_STYLES.royal;
+  if (id.includes('castle')) return HOUSE_STYLES.castle; // NEW CASTLE LOGIC
   
-  const styles = Object.keys(HOUSE_STYLES).filter(k => k !== 'royal');
+  const styles = Object.keys(HOUSE_STYLES).filter(k => k !== 'royal' && k !== 'castle');
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
     hash = id.charCodeAt(i) + ((hash << 5) - hash);
@@ -69,8 +70,34 @@ export const GameMapRender: React.FC<Props> = ({ mapData, playerPos, playerDir, 
         {mapData.objects.map((obj) => {
           if (obj.type === 'warp' && mapData.id.startsWith('village')) {
             const style = getHouseStyle(obj.id);
+            const isCastle = style.buildingType === 'castle';
+            
+            // Adjust size and offset for the massive castle
+            // Castle is approx 6 tiles wide, door is roughly centered (so ~3 tiles offset X)
+            const width = isCastle ? TILE_SIZE * 6 : TILE_SIZE * 3;
+            const height = isCastle ? TILE_SIZE * 5 : TILE_SIZE * 3;
+            
+            // Positioning Logic:
+            // Standard House (3x3): Door is at index (1, 2) inside the grid.
+            // Map pos is where player stands. We want door to be at 'obj.position'.
+            // If house top-left is (X, Y), door is at (X+1, Y+2) tiles.
+            // So X = pos.x - 1, Y = pos.y - 2. (Current code uses -1, -1 for simplicity/visuals, let's stick to that for normal houses)
+            
+            // Castle: Door is roughly at center bottom. In SVG 0-120, door is at 60 (center).
+            // In tiles (width 6), center is tile 3.
+            // Height 5 tiles. Door is at bottom (tile 4).
+            // So X = pos.x - 3, Y = pos.y - 4 ?
+            
+            const leftOffset = isCastle ? 3 : 1;
+            const topOffset = isCastle ? 3.8 : 1; 
+
             return (
-              <div key={obj.id} className="absolute pointer-events-none" style={{ left: (obj.position.x-1) * TILE_SIZE, top: (obj.position.y-1) * TILE_SIZE, width: TILE_SIZE*3, height: TILE_SIZE*3 }}>
+              <div key={obj.id} className="absolute pointer-events-none" 
+                   style={{ 
+                     left: (obj.position.x - leftOffset) * TILE_SIZE, 
+                     top: (obj.position.y - topOffset) * TILE_SIZE, 
+                     width, height 
+                   }}>
                 <HouseModel style={style} />
               </div>
             );

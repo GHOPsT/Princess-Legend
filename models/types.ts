@@ -13,7 +13,7 @@ export type ItemType = 'potion' | 'key' | 'sword';
 export interface NPCData {
   name: string;
   role: 'guard' | 'merchant' | 'elder' | 'villager' | 'storyteller' | 'animal';
-  spriteType: 'elder' | 'villager' | 'merchant' | 'dog' | 'cat';
+  spriteType: 'elder' | 'villager' | 'merchant' | 'dog' | 'cat' | 'guard';
   dialogue: Record<string, { text: string; nextStep?: string }>;
   initialStep: string;
 }

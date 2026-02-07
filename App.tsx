@@ -37,8 +37,63 @@ export default function App() {
       let newX = prev.playerPos.x + dx;
       let newY = prev.playerPos.y + dy;
 
-      // Colisiones básicas
-      if (newX < 0 || newX >= map.width || newY < 0 || newY >= map.height) return { ...prev, direction: newDir };
+      // --- LOGICA DE TRANSICIÓN DE MAPAS ---
+      // Si se sale por la izquierda
+      if (newX < 0) {
+        if (map.connections.left) {
+           return {
+             ...prev,
+             currentMapId: map.connections.left,
+             playerPos: { x: map.width - 1, y: newY }, // Aparece a la derecha del nuevo mapa
+             direction: newDir,
+             messages: [`Viajando al Oeste...`]
+           };
+        } else {
+           return { ...prev, direction: newDir }; // Bloqueado
+        }
+      }
+      // Si se sale por la derecha
+      if (newX >= map.width) {
+        if (map.connections.right) {
+           return {
+             ...prev,
+             currentMapId: map.connections.right,
+             playerPos: { x: 0, y: newY }, // Aparece a la izquierda del nuevo mapa
+             direction: newDir,
+             messages: [`Viajando al Este...`]
+           };
+        } else {
+           return { ...prev, direction: newDir };
+        }
+      }
+      // Si se sale por arriba
+      if (newY < 0) {
+        if (map.connections.up) {
+           return {
+             ...prev,
+             currentMapId: map.connections.up,
+             playerPos: { x: newX, y: map.height - 1 }, // Aparece abajo del nuevo mapa
+             direction: newDir,
+             messages: [`Viajando al Norte...`]
+           };
+        } else {
+           return { ...prev, direction: newDir };
+        }
+      }
+      // Si se sale por abajo
+      if (newY >= map.height) {
+        if (map.connections.down) {
+           return {
+             ...prev,
+             currentMapId: map.connections.down,
+             playerPos: { x: newX, y: 0 }, // Aparece arriba del nuevo mapa
+             direction: newDir,
+             messages: [`Viajando al Sur...`]
+           };
+        } else {
+           return { ...prev, direction: newDir };
+        }
+      }
       
       const tile = map.tiles[newY][newX];
       const blockedTiles = ['wall', 'water', 'fountain', 'bed', 'sofa', 'table', 'bookshelf', 'oven', 'counter'];
@@ -117,6 +172,20 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden">
+      
+      {/* HUD SUPERIOR */}
+      <div className="mb-4 flex gap-12 text-white text-[10px] uppercase tracking-widest font-bold z-50">
+          <div className="flex items-center gap-3 bg-red-900/40 px-4 py-2 border-2 border-red-500/30 rounded pixel-shadow-inner">
+            <Heart className="text-red-500 fill-red-500 animate-pulse" size={14}/> <span>3 / 3</span>
+          </div>
+          <div className="flex items-center gap-3 bg-yellow-900/40 px-4 py-2 border-2 border-yellow-500/30 rounded pixel-shadow-inner">
+            <Coins className="text-yellow-500" size={14}/> <span>{gameState.coins}</span>
+          </div>
+          <div className="bg-pink-900/40 px-4 py-2 border-2 border-pink-500/30 rounded pixel-shadow-inner">
+            ZONA: <span className="text-pink-400">{gameState.currentMapId.replace('village_', '').toUpperCase()}</span>
+          </div>
+      </div>
+
       <div className="relative border-8 border-[#333] bg-black p-2 pixel-shadow scale-[1.1]">
           <GameMapRender 
             mapData={currentMap} playerPos={gameState.playerPos} playerDir={gameState.direction} 
@@ -129,11 +198,6 @@ export default function App() {
               </p>
           </div>
           <div className="scanlines"></div>
-      </div>
-      <div className="mt-8 flex gap-12 text-white text-[10px] uppercase tracking-widest font-bold">
-          <div className="flex items-center gap-3 bg-red-900/40 px-4 py-2 border-2 border-red-500/30 rounded"><Heart className="text-red-500 fill-red-500" size={14}/> <span>3 / 3</span></div>
-          <div className="flex items-center gap-3 bg-yellow-900/40 px-4 py-2 border-2 border-yellow-500/30 rounded"><Coins className="text-yellow-500" size={14}/> <span>{gameState.coins}</span></div>
-          <div className="bg-pink-900/40 px-4 py-2 border-2 border-pink-500/30 rounded">ZONA: <span className="text-pink-400">{gameState.currentMapId.replace('_', ' ')}</span></div>
       </div>
     </div>
   );
