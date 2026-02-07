@@ -20,6 +20,54 @@ export const PrincessModel = ({ appearance }: { appearance: PlayerAppearance }) 
 export const NPCModel = ({ type }: { type: NPCData['spriteType'] }) => {
   const isElder = type === 'elder';
   const isMerchant = type === 'merchant';
+  const isDog = type === 'dog';
+  const isCat = type === 'cat';
+
+  if (isDog) {
+    return (
+      <svg width="100%" height="100%" viewBox="0 0 24 24">
+        {/* Body */}
+        <rect x="6" y="14" width="12" height="6" fill="#8d5b3e" rx="1" />
+        {/* Head */}
+        <rect x="14" y="10" width="6" height="6" fill="#8d5b3e" rx="1" />
+        {/* Ear */}
+        <rect x="18" y="10" width="3" height="4" fill="#5d4037" rx="1" />
+        {/* Nose */}
+        <rect x="20" y="13" width="1.5" height="1.5" fill="black" />
+        {/* Eye */}
+        <rect x="16" y="11.5" width="1" height="1" fill="black" />
+        {/* Legs */}
+        <rect x="7" y="20" width="2" height="3" fill="#5d4037" />
+        <rect x="15" y="20" width="2" height="3" fill="#5d4037" />
+        {/* Tail */}
+        <rect x="4" y="14" width="3" height="2" fill="#8d5b3e">
+          <animateTransform attributeName="transform" type="rotate" from="0 6 15" to="20 6 15" dur="0.2s" repeatCount="indefinite" />
+        </rect>
+      </svg>
+    );
+  }
+
+  if (isCat) {
+    return (
+      <svg width="100%" height="100%" viewBox="0 0 24 24">
+        {/* Body */}
+        <rect x="8" y="15" width="8" height="6" fill="#333" rx="1" />
+        {/* Head */}
+        <rect x="10" y="10" width="7" height="7" fill="#333" rx="1" />
+        {/* Ears */}
+        <path d="M10 10 L12 7 L14 10 Z" fill="#333" />
+        <path d="M14 10 L16 7 L18 10 Z" fill="#333" />
+        {/* Eyes */}
+        <rect x="12" y="12" width="1" height="1" fill="#ccff00" />
+        <rect x="15" y="12" width="1" height="1" fill="#ccff00" />
+        {/* Tail */}
+        <path d="M8 18 Q4 18 4 12" fill="none" stroke="#333" strokeWidth="1.5">
+          <animate attributeName="d" values="M8 18 Q4 18 4 12; M8 18 Q4 22 4 12; M8 18 Q4 18 4 12" dur="2s" repeatCount="indefinite" />
+        </path>
+      </svg>
+    );
+  }
+
   return (
     <svg width="100%" height="100%" viewBox="0 0 24 24">
       <rect x="6" y="12" width="12" height="11" fill={isMerchant ? '#7c2d12' : isElder ? '#4b5563' : '#1e3a8a'} rx="1" />

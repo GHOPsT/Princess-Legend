@@ -3,6 +3,12 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { logger } from "./logger";
 
 export const generateNPCDialogue = async (role: string, name: string): Promise<string> => {
+  // Manejo directo para animales para evitar latencia de IA en sonidos básicos
+  if (role === 'animal') {
+    const isDog = name.toLowerCase().includes('perr') || name.toLowerCase().includes('dog');
+    return isDog ? "¡Guau! ¡Guau! *mueve la cola*" : "¡Miau! *Prrr...*";
+  }
+
   try {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const prompt = `Actúa como un NPC de un RPG de 16 bits. Nombre: ${name}, Rol: ${role}. 

@@ -50,22 +50,73 @@ export const FloorTile = ({ type }: { type: TileType }) => {
 };
 
 export const FountainModel = () => (
-  <g transform="translate(-8, -14) scale(2.2)">
-    <ellipse cx="8" cy="14" rx="11" ry="4" fill="#000" opacity="0.2" />
-    <rect x="-2" y="8" width="20" height="3" fill="#666" stroke="#333" strokeWidth="0.5" />
-    <rect x="-1" y="8.5" width="18" height="5.5" fill="#1e40af" />
-    <rect x="4.5" y="4" width="7" height="7" fill="#555" stroke="#333" strokeWidth="0.5" /> 
-    <rect x="5.5" y="-2" width="5" height="7" fill="#777" stroke="#444" strokeWidth="0.5" />
-    <rect x="4" y="-3.5" width="8" height="1" fill="#3b82f6" opacity="0.8" />
-    <rect x="-2" y="11" width="20" height="4" fill="#888" stroke="#333" strokeWidth="0.5" />
-    <g>
-       <rect x="2.5" y="-2" width="1.2" height="12" fill="#60a5fa" opacity="0.6" />
-       <rect x="12.3" y="-2" width="1.2" height="12" fill="#60a5fa" opacity="0.6" />
+  <svg width="160" height="160" viewBox="0 0 160 160" style={{ overflow: 'visible' }}>
+    <g transform="translate(80, 80) scale(3.5)">
+      {/* Shadow */}
+      <ellipse cx="0" cy="9" rx="18" ry="6" fill="#000" opacity="0.2" />
+
+      {/* --- LEVEL 1: BASE BASIN --- */}
+      {/* Stone Rim */}
+      <ellipse cx="0" cy="6" rx="16" ry="8" fill="#4b5563" stroke="#1f2937" strokeWidth="0.5" />
+      {/* Water Surface */}
+      <ellipse cx="0" cy="5" rx="14" ry="6.5" fill="#1e40af" />
+      
+      {/* Water Ripples */}
+      {[0, 1.2].map((delay, i) => (
+        <ellipse key={i} cx="0" cy="5.5" rx="1" ry="0.5" fill="none" stroke="#93c5fd" strokeWidth="0.2" opacity="0">
+          <animate attributeName="rx" from="1" to="13" dur="2.4s" begin={`${delay}s`} repeatCount="indefinite" />
+          <animate attributeName="ry" from="0.5" to="5" dur="2.4s" begin={`${delay}s`} repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0;0.6;0" dur="2.4s" begin={`${delay}s`} repeatCount="indefinite" />
+        </ellipse>
+      ))}
+
+      {/* --- LEVEL 2: MIDDLE BASIN --- */}
+      {/* Central lower pillar */}
+      <rect x="-3" y="-1" width="6" height="7" fill="#64748b" stroke="#334155" strokeWidth="0.4" />
+      {/* Middle basin */}
+      <ellipse cx="0" cy="-2" rx="9" ry="4" fill="#64748b" stroke="#334155" strokeWidth="0.4" />
+      <ellipse cx="0" cy="-2.5" rx="8" ry="3.2" fill="#2563eb" />
+
+      {/* --- LEVEL 3: TOP SPIRE --- */}
+      {/* Top pillar */}
+      <rect x="-2" y="-6" width="4" height="5" fill="#94a3b8" stroke="#475569" strokeWidth="0.4" />
+      {/* Spire tip */}
+      <circle cx="0" cy="-6" r="2.5" fill="#cbd5e1" stroke="#475569" strokeWidth="0.4" />
+
+      {/* --- WATER EFFECTS --- */}
+      <g>
+        {/* Top spout */}
+        <rect x="-0.8" y="-10" width="1.6" height="4" fill="#fff" opacity="0.8">
+          <animate attributeName="height" values="2;5;2" dur="0.5s" repeatCount="indefinite" />
+          <animate attributeName="y" values="-9;-11;-9" dur="0.5s" repeatCount="indefinite" />
+        </rect>
+
+        {/* Falling water to base */}
+        <path d="M-8 -2 Q-11 2 -11 5" fill="none" stroke="#bfdbfe" strokeWidth="1" strokeDasharray="3,2">
+          <animate attributeName="stroke-dashoffset" from="5" to="0" dur="0.6s" repeatCount="indefinite" />
+        </path>
+        <path d="M8 -2 Q11 2 11 5" fill="none" stroke="#bfdbfe" strokeWidth="1" strokeDasharray="3,2">
+          <animate attributeName="stroke-dashoffset" from="5" to="0" dur="0.6s" repeatCount="indefinite" />
+        </path>
+
+        {/* Splashes at base */}
+        {[-11, 11].map((x, i) => (
+          <g key={i} transform={`translate(${x}, 5)`}>
+            <circle r="0.8" fill="#fff">
+              <animate attributeName="cy" values="0;-3;0" dur="0.6s" begin={`${i*0.3}s`} repeatCount="indefinite" />
+              <animate attributeName="opacity" values="1;0;1" dur="0.6s" begin={`${i*0.3}s`} repeatCount="indefinite" />
+            </circle>
+          </g>
+        ))}
+      </g>
+
+      {/* Magic sparkle atop spire */}
+      <circle cx="0" cy="-10.5" r="1" fill="#fff">
+        <animate attributeName="r" values="0.5;1.5;0.5" dur="0.4s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="1;0.2;1" dur="0.4s" repeatCount="indefinite" />
+      </circle>
     </g>
-    <path d="M6.5 -5 Q8 -12 9.5 -5" fill="none" stroke="#93c5fd" strokeWidth="2" strokeDasharray="3,3" strokeLinecap="round">
-       <animate attributeName="stroke-dashoffset" values="6;0" dur="0.3s" repeatCount="indefinite" />
-    </path>
-  </g>
+  </svg>
 );
 
 export const FurnitureIcon = ({ type }: { type: string }) => {
