@@ -6,7 +6,7 @@ export interface PlayerAppearance {
 
 export type Position = { x: number; y: number; };
 
-export type TileType = 'grass' | 'water' | 'wall' | 'floor' | 'door' | 'bed' | 'table' | 'sofa' | 'oven' | 'flower' | 'bookshelf' | 'counter' | 'fountain' | 'path';
+export type TileType = 'grass' | 'water' | 'wall' | 'floor' | 'door' | 'bed' | 'table' | 'sofa' | 'oven' | 'flower' | 'bookshelf' | 'counter' | 'fountain' | 'path' | 'banner' | 'armor' | 'candle';
 
 export type ItemType = 'potion' | 'key' | 'sword';
 

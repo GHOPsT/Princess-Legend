@@ -5,7 +5,7 @@ import { MAPS, HAIR_COLORS, DRESS_COLORS } from './maps/world';
 import { Direction, GameState } from './models/types';
 import { generateNPCDialogue } from './utils/gemini';
 import { logger } from './utils/logger';
-import { Heart, Coins } from 'lucide-react';
+import { Heart, Coins, MapPin } from 'lucide-react';
 
 const INITIAL_STATE: GameState = {
   currentMapId: 'village_center',
@@ -96,7 +96,7 @@ export default function App() {
       }
       
       const tile = map.tiles[newY][newX];
-      const blockedTiles = ['wall', 'water', 'fountain', 'bed', 'sofa', 'table', 'bookshelf', 'oven', 'counter'];
+      const blockedTiles = ['wall', 'water', 'fountain', 'bed', 'sofa', 'table', 'bookshelf', 'oven', 'counter', 'banner', 'armor', 'candle'];
       if (blockedTiles.includes(tile)) return { ...prev, direction: newDir };
       
       const npcInWay = map.objects.some(obj => obj.type === 'npc' && obj.position.x === newX && obj.position.y === newY);
@@ -173,30 +173,42 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden">
       
-      {/* HUD SUPERIOR */}
-      <div className="mb-4 flex gap-12 text-white text-[10px] uppercase tracking-widest font-bold z-50">
-          <div className="flex items-center gap-3 bg-red-900/40 px-4 py-2 border-2 border-red-500/30 rounded pixel-shadow-inner">
-            <Heart className="text-red-500 fill-red-500 animate-pulse" size={14}/> <span>3 / 3</span>
-          </div>
-          <div className="flex items-center gap-3 bg-yellow-900/40 px-4 py-2 border-2 border-yellow-500/30 rounded pixel-shadow-inner">
-            <Coins className="text-yellow-500" size={14}/> <span>{gameState.coins}</span>
-          </div>
-          <div className="bg-pink-900/40 px-4 py-2 border-2 border-pink-500/30 rounded pixel-shadow-inner">
-            ZONA: <span className="text-pink-400">{gameState.currentMapId.replace('village_', '').toUpperCase()}</span>
-          </div>
-      </div>
-
+      {/* GAME WINDOW */}
       <div className="relative border-8 border-[#333] bg-black p-2 pixel-shadow scale-[1.1]">
+          
+          {/* HUD INTEGRADO - TOP LEFT (Stats) */}
+          <div className="absolute top-4 left-4 z-50 flex flex-col gap-2 pointer-events-none">
+              <div className="flex items-center gap-2 bg-black/70 px-2 py-1 border-2 border-white/20 text-white rounded text-[10px]">
+                <Heart className="text-red-500 fill-red-500 animate-pulse" size={12}/> 
+                <span className="mt-[2px]">3 / 3</span>
+              </div>
+              <div className="flex items-center gap-2 bg-black/70 px-2 py-1 border-2 border-white/20 text-white rounded text-[10px]">
+                <Coins className="text-yellow-500" size={12}/> 
+                <span className="mt-[2px]">{gameState.coins}</span>
+              </div>
+          </div>
+
+          {/* HUD INTEGRADO - TOP RIGHT (Zone) */}
+          <div className="absolute top-4 right-4 z-50 pointer-events-none">
+             <div className="flex items-center gap-2 bg-black/70 px-3 py-2 border-2 border-white/20 text-white text-[9px] uppercase rounded">
+                <MapPin size={10} className="text-pink-400" />
+                <span className="text-pink-200 mt-[1px]">{gameState.currentMapId.replace('village_', '').replace('_', ' ')}</span>
+             </div>
+          </div>
+
           <GameMapRender 
             mapData={currentMap} playerPos={gameState.playerPos} playerDir={gameState.direction} 
             collectedObjectIds={gameState.collectedObjectIds} appearance={gameState.appearance} 
           />
           
+          {/* DIALOG BOX - BOTTOM */}
           <div className="absolute bottom-6 left-6 right-6 bg-blue-900/90 border-4 border-white p-4 min-h-[90px] z-50">
               <p className="text-white text-[10px] leading-relaxed">
                   {gameState.messages[0]}
               </p>
           </div>
+          
+          {/* SCANLINES EFFECT */}
           <div className="scanlines"></div>
       </div>
     </div>

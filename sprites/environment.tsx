@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { TileType } from '../models/types';
-import { Sparkles, Utensils } from 'lucide-react';
+import { Sparkles, Utensils, Shield, Flag, Flame } from 'lucide-react';
 
 export const FloorTile = ({ type }: { type: TileType }) => {
   const colors: any = { 
@@ -10,7 +10,10 @@ export const FloorTile = ({ type }: { type: TileType }) => {
     floor: '#d9a066', 
     wall: '#757161',
     fountain: '#d1b48c', 
-    path: '#d1b48c' 
+    path: '#d1b48c',
+    banner: '#757161', // Wall background
+    armor: '#d9a066', // Floor background
+    candle: '#d9a066' // Floor background
   };
   
   return (
@@ -129,6 +132,43 @@ export const FurnitureIcon = ({ type }: { type: string }) => {
     case 'bookshelf': return <div className="w-full h-full bg-amber-900 border-2 border-amber-950 p-1 flex flex-col gap-1"><div className="h-1 bg-blue-400 w-full"/><div className="h-1 bg-red-400 w-full"/><div className="h-1 bg-green-400 w-full"/></div>;
     case 'counter': return <div className="w-full h-full bg-amber-800 border-b-4 border-amber-950 shadow-md" />;
     case 'door': return <div className="w-full h-full bg-black/40 flex items-center justify-center"><div className="text-white text-[8px] animate-pulse">EXIT</div></div>; 
+    
+    // NEW DECORATIONS
+    case 'banner': return (
+      <div className="w-full h-full flex justify-center items-start pt-1">
+        <svg viewBox="0 0 24 30" width="80%" height="90%" className="drop-shadow-md">
+           <path d="M2 2 L22 2 L22 22 L12 28 L2 22 Z" fill="#b91c1c" stroke="#7f1d1d" strokeWidth="1" />
+           <path d="M12 2 L12 28" stroke="#fbbf24" strokeWidth="2" opacity="0.8" />
+           <circle cx="12" cy="10" r="4" fill="none" stroke="#fbbf24" strokeWidth="1.5" />
+           <rect x="0" y="0" width="24" height="2" fill="#573a2e" /> {/* Rod */}
+        </svg>
+      </div>
+    );
+    case 'armor': return (
+      <div className="w-full h-full flex justify-center items-end pb-1">
+        <svg viewBox="0 0 24 24" width="90%" height="90%" className="drop-shadow-sm">
+           {/* Base/Legs */}
+           <rect x="8" y="16" width="3" height="8" fill="#9ca3af" />
+           <rect x="13" y="16" width="3" height="8" fill="#9ca3af" />
+           {/* Torso */}
+           <path d="M6 8 L18 8 L16 16 L8 16 Z" fill="#6b7280" />
+           {/* Shoulders */}
+           <circle cx="5" cy="8" r="2.5" fill="#4b5563" />
+           <circle cx="19" cy="8" r="2.5" fill="#4b5563" />
+           {/* Head */}
+           <rect x="9" y="2" width="6" height="6" rx="1" fill="#cbd5e1" stroke="#475569" strokeWidth="1"/>
+           <line x1="10" y1="4" x2="14" y2="4" stroke="#000" strokeWidth="1" />
+        </svg>
+      </div>
+    );
+    case 'candle': return (
+      <div className="w-full h-full flex flex-col items-center justify-end pb-2">
+        <div className="w-1 h-3 bg-red-500 rounded-full animate-pulse blur-[1px] mb-[-2px] z-10" />
+        <div className="w-2 h-6 bg-amber-100 border border-amber-200" />
+        <div className="w-6 h-2 bg-yellow-700 rounded-full mt-[-1px]" />
+      </div>
+    );
+
     default: return null;
   }
 };

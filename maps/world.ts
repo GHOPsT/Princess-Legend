@@ -21,10 +21,10 @@ for(let i=0; i<15; i++) { village_center.tiles[6][i] = 'path'; village_center.ti
 for(let i=0; i<12; i++) { village_center.tiles[i][7] = 'path'; village_center.tiles[i][8] = 'path'; }
 village_center.tiles[6][7] = 'fountain'; 
 village_center.objects.push(
-    { id: 'h_player', type: 'warp', position: { x: 3, y: 3 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } },
-    { id: 'h_villager_1', type: 'warp', position: { x: 11, y: 3 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } },
-    { id: 'h_villager_2', type: 'warp', position: { x: 3, y: 10 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } },
-    { id: 'h_villager_3', type: 'warp', position: { x: 11, y: 10 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } },
+    { id: 'h_player', type: 'warp', position: { x: 3, y: 3 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } },
+    { id: 'h_villager_1', type: 'warp', position: { x: 11, y: 3 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } },
+    { id: 'h_villager_2', type: 'warp', position: { x: 3, y: 10 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } },
+    { id: 'h_villager_3', type: 'warp', position: { x: 11, y: 10 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } },
     { id: 'npc_elder', type: 'npc', position: { x: 9, y: 8 }, npcData: { name: "Anciano Valerius", role: 'elder', spriteType: 'elder', initialStep: 'start', dialogue: { 'start': { text: "Bienvenida a casa, Alteza." } } }},
     { id: 'npc_dog', type: 'npc', position: { x: 5, y: 7 }, npcData: { name: "Perrito", role: 'animal', spriteType: 'dog', initialStep: 'start', dialogue: { 'start': { text: "¡Guau! ¡Guau!" } } }},
     { id: 'npc_cat', type: 'npc', position: { x: 8, y: 4 }, npcData: { name: "Gatito", role: 'animal', spriteType: 'cat', initialStep: 'start', dialogue: { 'start': { text: "¡Miau! *Prrr*" } } }}
@@ -34,8 +34,8 @@ village_center.objects.push(
 const village_north = createBaseMap('village_north');
 for(let i=0; i<12; i++) { village_north.tiles[i][7] = 'path'; village_north.tiles[i][8] = 'path'; } // Camino vertical
 village_north.objects.push(
-    { id: 'h_n_1', type: 'warp', position: { x: 4, y: 5 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } },
-    { id: 'h_n_2', type: 'warp', position: { x: 10, y: 5 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } }
+    { id: 'h_n_1', type: 'warp', position: { x: 4, y: 5 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } },
+    { id: 'h_n_2', type: 'warp', position: { x: 10, y: 5 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } }
 );
 
 // 3. SUR (Salida del pueblo, más naturaleza)
@@ -49,7 +49,7 @@ village_south.objects.push(
 const village_east = createBaseMap('village_east');
 for(let i=0; i<15; i++) { village_east.tiles[6][i] = 'path'; village_east.tiles[7][i] = 'path'; } // Camino horizontal
 village_east.objects.push(
-    { id: 'shop_1', type: 'warp', position: { x: 7, y: 4 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } },
+    { id: 'shop_1', type: 'warp', position: { x: 7, y: 4 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } },
     { id: 'npc_merch', type: 'npc', position: { x: 8, y: 8 }, npcData: { name: "Mercader", role: 'merchant', spriteType: 'merchant', initialStep: 'start', dialogue: { 'start': { text: "¿Buscas pociones raras?" } } }}
 );
 
@@ -57,7 +57,7 @@ village_east.objects.push(
 const village_west = createBaseMap('village_west');
 for(let i=0; i<15; i++) { village_west.tiles[6][i] = 'path'; village_west.tiles[7][i] = 'path'; } // Camino horizontal
 village_west.objects.push(
-    { id: 'h_w_1', type: 'warp', position: { x: 6, y: 5 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } }
+    { id: 'h_w_1', type: 'warp', position: { x: 6, y: 5 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } }
 );
 
 // 6. NORESTE (Rincón tranquilo - AHORA CON CASTILLO)
@@ -75,13 +75,13 @@ village_ne.objects.push({ id: 'warp_castle', type: 'warp', position: { x: 8, y: 
 // 7. NOROESTE (Bosque denso)
 const village_nw = createBaseMap('village_nw');
 village_nw.tiles[11][7] = 'path';
-village_nw.objects.push({ id: 'h_nw', type: 'warp', position: { x: 5, y: 5 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } });
+village_nw.objects.push({ id: 'h_nw', type: 'warp', position: { x: 5, y: 5 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } });
 
 // 8. SURESTE (Lago/Agua)
 const village_se = createBaseMap('village_se');
 for(let x=8; x<15; x++) for(let y=6; y<12; y++) village_se.tiles[y][x] = 'water'; // Un lago
 village_se.tiles[0][7] = 'path';
-village_se.objects.push({ id: 'h_se', type: 'warp', position: { x: 4, y: 6 }, targetMap: 'house_player', targetPos: { x: 5, y: 8 } });
+village_se.objects.push({ id: 'h_se', type: 'warp', position: { x: 4, y: 6 }, targetMap: 'house_player', targetPos: { x: 6, y: 10 } });
 
 // 9. SUROESTE (Campo abierto)
 const village_sw = createBaseMap('village_sw');
@@ -114,16 +114,52 @@ village_sw.connections = { right: 'village_south', up: 'village_west' };
 
 
 // --- INTERIORES ---
-const house_player = createBaseMap('house_player', 11, 10);
-house_player.tiles = Array(10).fill(0).map(() => Array(11).fill('floor'));
-for(let x=0; x<11; x++) house_player.tiles[0][x] = 'wall';
+const house_player = createBaseMap('house_player', 12, 12);
+house_player.tiles = Array(12).fill(0).map(() => Array(12).fill('floor'));
+
+// Outer Walls
+for(let x=0; x<12; x++) { 
+    house_player.tiles[0][x] = 'wall'; 
+    house_player.tiles[11][x] = 'wall'; 
+}
+for(let y=0; y<12; y++) { 
+    house_player.tiles[y][0] = 'wall'; 
+    house_player.tiles[y][11] = 'wall'; 
+}
+
+// Bedroom (Top Left)
+for(let y=1; y<6; y++) house_player.tiles[y][5] = 'wall'; // Divider
+house_player.tiles[4][5] = 'door'; // Internal door
 house_player.tiles[1][1] = 'bed';
-house_player.tiles[1][9] = 'oven';
-house_player.tiles[9][5] = 'door';
-house_player.objects.push({ id: 'exit', type: 'warp', position: { x: 5, y: 9 }, targetMap: 'village_center', targetPos: { x: 3, y: 4 } });
+house_player.tiles[1][2] = 'flower';
+house_player.tiles[1][4] = 'bookshelf';
+house_player.tiles[5][1] = 'candle'; 
+
+// Kitchen (Top Right)
+house_player.tiles[1][10] = 'oven';
+house_player.tiles[1][9] = 'counter';
+house_player.tiles[1][8] = 'counter';
+house_player.tiles[1][7] = 'counter';
+house_player.tiles[3][9] = 'table';
+house_player.tiles[3][8] = 'flower';
+
+// Living Room (Bottom Left)
+house_player.tiles[7][1] = 'bookshelf';
+house_player.tiles[7][2] = 'bookshelf';
+house_player.tiles[9][2] = 'sofa';
+house_player.tiles[9][3] = 'table';
+house_player.tiles[9][1] = 'flower';
+
+// Exit Door
+house_player.tiles[11][6] = 'door';
+
+house_player.objects.push(
+    { id: 'exit', type: 'warp', position: { x: 6, y: 11 }, targetMap: 'village_center', targetPos: { x: 3, y: 4 } },
+    { id: 'house_cat', type: 'npc', position: { x: 8, y: 8 }, npcData: { name: "Mishi", role: 'animal', spriteType: 'cat', initialStep: 'start', dialogue: { 'start': { text: "Prrr... *Se frota en tu pierna*" } } }}
+);
 
 
-// --- CASTILLO INTERIOR (GRANDIOSE) ---
+// --- CASTLE INTERIOR (GRANDIOSE) ---
 // Increased size to 30x24 to accommodate wings
 const castle_interior = createBaseMap('castle_interior', 30, 24);
 castle_interior.tiles = Array(24).fill(0).map(() => Array(30).fill('floor'));
@@ -169,6 +205,23 @@ castle_interior.tiles[2][14] = 'sofa'; // Throne
 castle_interior.tiles[2][15] = 'sofa'; // Throne
 castle_interior.tiles[2][13] = 'flower'; 
 castle_interior.tiles[2][16] = 'flower';
+
+// --- DECORATIONS (NEW) ---
+// Banners on the back wall
+castle_interior.tiles[0][13] = 'banner';
+castle_interior.tiles[0][16] = 'banner';
+
+// Candelabras near throne
+castle_interior.tiles[2][12] = 'candle';
+castle_interior.tiles[2][17] = 'candle';
+
+// Suits of Armor lining the carpet
+castle_interior.tiles[5][12] = 'armor';
+castle_interior.tiles[5][17] = 'armor';
+castle_interior.tiles[9][12] = 'armor';
+castle_interior.tiles[9][17] = 'armor';
+castle_interior.tiles[13][12] = 'armor';
+castle_interior.tiles[13][17] = 'armor';
 
 // 3. KITCHEN (West Wing - Top: x 1-8, y 1-11)
 for(let y=1; y<4; y++) for(let x=1; x<9; x++) castle_interior.tiles[y][x] = 'counter'; // Cabinets
